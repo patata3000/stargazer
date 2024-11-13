@@ -1,0 +1,18 @@
+[project]
+name = "stargazer"
+version = "0.1.0"
+description = "Gaze into github stars"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.115.4",
+    "pydantic-settings>=2.6.1",
+    "pygithub>=2.5.0",
+    "pytest>=8.3.3",
+    "sqlalchemy>=2.0.36",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.13.0",
+]

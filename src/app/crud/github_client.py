@@ -4,7 +4,7 @@ from github.Auth import AppAuth
 from app.config import settings
 
 
-def make_github_api() -> Github:
+def make_github_app_client() -> Github:
     """Build Github API client by authenticating as an Github App.
 
     Return:

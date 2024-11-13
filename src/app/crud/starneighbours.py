@@ -11,7 +11,7 @@ from github.Repository import Repository
 from app.config import settings
 from app.schemas.stargazer import Starneighbour
 
-from .github_client import make_github_api
+from .github_client import make_github_app_client
 
 logger = logging.getLogger(__name__)
 
@@ -29,10 +29,11 @@ def get_starneighbours(user: str, repo: str) -> list[Starneighbour]:
     Return:
         List of all the Starneighbours.
     """
-    pool = ThreadPool(processes=4)
-    main_repo_stargazers: list[NamedUser] = fetch_stargazers(pool, user, repo)
-    stargazed_repos = pool.map(fetch_user_starred_repos, main_repo_stargazers)
-    mapping_repos_stargazers = build_repo_username_mapping(stargazed_repos)
+    with ThreadPool(processes=4) as pool:
+        api: Github = make_github_app_client()
+        main_repo_stargazers: list[NamedUser] = fetch_stargazers(api, pool, user, repo)
+        stargazed_repos = pool.map(fetch_user_starred_repos, main_repo_stargazers)
+        mapping_repos_stargazers = build_repo_username_mapping(stargazed_repos)
     result = build_result(mapping_repos_stargazers)
     logger.debug(
         "Results -> nb users: %d ; nb repos: %d", len(main_repo_stargazers), len(result)
@@ -40,7 +41,9 @@ def get_starneighbours(user: str, repo: str) -> list[Starneighbour]:
     return result
 
 
-def fetch_stargazers(pool: ThreadPool, user: str, repo: str) -> list[NamedUser]:
+def fetch_stargazers(
+    github_client: Github, pool: ThreadPool, user: str, repo: str
+) -> list[NamedUser]:
     """Retrieve the stargazers of the current repo.
 
     Args:
@@ -51,14 +54,13 @@ def fetch_stargazers(pool: ThreadPool, user: str, repo: str) -> list[NamedUser]:
     Return:
         List of all stargazers of the `repo`.
     """
-    api: Github = make_github_api()
-    main_repo = api.get_repo(f"{user}/{repo}")
+    main_repo = github_client.get_repo(f"{user}/{repo}")
     stargazer_result = []
     logger.debug("Fetching stargazer")
     stargazers: PaginatedList[NamedUser] = main_repo.get_stargazers()
     page_iterator = get_page_iterator(stargazers)
     for stargazer_list in pool.map(stargazers.get_page, page_iterator):
-        logger.debug("Fetched %s stargazers", len(stargazer_list))
+        logger.debug("Fetched %d stargazers", len(stargazer_list))
         stargazer_result.extend(stargazer_list)
     return stargazer_result
 

@@ -1,7 +1,4 @@
-from uuid import UUID
-
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter
 
 from app.crud.starneighbours import get_starneighbours
 from app.schemas.stargazer import Starneighbour

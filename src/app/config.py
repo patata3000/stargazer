@@ -1,6 +1,6 @@
 import logging
 
-from pydantic import field_validator, PostgresDsn, ValidationInfo
+from pydantic import field_validator, ValidationInfo
 from pydantic_settings import BaseSettings
 
 
@@ -48,16 +48,6 @@ class Settings(BaseSettings):
 
     LOGGING_LEVEL: int = logging.DEBUG
     """Global logging level."""
-
-    # ECHO_SQL_QUERIES: bool = False
-
-    # DB_HOST: str
-    # DB_PORT: str
-    # DB_USER: str
-    # DB_PASSWORD: str
-    # DB_NAME: str
-
-    # SQLALCHEMY_DATABASE_URI: PostgresDsn | str = ""
 
 
 settings = Settings()  # pyright: ignore

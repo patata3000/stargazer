@@ -25,7 +25,6 @@ class Settings(BaseSettings):
     @field_validator("PRIVATE_KEY", mode="before")
     @classmethod
     def extract_private_key(cls, v: str, info: ValidationInfo) -> str:
-        print("asnasenuiarseniarsenuratin", v)
         if v and isinstance(v, str):
             return v
         pk_path = info.data.get("PRIVATE_KEY_PATH")

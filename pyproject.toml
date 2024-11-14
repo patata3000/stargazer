@@ -8,11 +8,10 @@ dependencies = [
     "fastapi>=0.115.4",
     "pydantic-settings>=2.6.1",
     "pygithub>=2.5.0",
-    "pytest>=8.3.3",
-    "sqlalchemy>=2.0.36",
 ]
 
 [dependency-groups]
 dev = [
     "mypy>=1.13.0",
+    "pytest>=8.3.3",
 ]
